@@ -16,7 +16,30 @@ const fectchSinToken = ( endpoint, data, method = 'GET') => {
     }
 
 }
+const fectchConToken = ( endpoint, data, method = 'GET') => {
+
+    const url = `${baseUrl}/${endpoint}`;
+    if(method === 'GET') {
+        return fetch( url,{
+            method,
+            headers: {
+                'x-token': localStorage.getItem('token') || ''
+            },
+        } );
+    }else{
+        return fetch( url , {
+            method,
+            headers: {
+                'Content-type': 'application/json',
+                'x-token': localStorage.getItem('token') || ''
+            },
+            body: JSON.stringify( data )
+        })
+    }
+
+}
 
 export {
-    fectchSinToken
+    fectchSinToken,
+    fectchConToken
 }
