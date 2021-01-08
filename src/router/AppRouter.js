@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     BrowserRouter as Router,
     Switch,
@@ -9,22 +9,39 @@ import {
 import { startChecking } from '../actions/auth';
 import { LoginScreen } from '../components/auth/LoginScreen';
 import { CalendarScreen } from '../components/calendar/CalendarScreen';
+import { PrivateRoute } from './PrivateRoute';
+import { PublicRoute } from './PublicRoute';
 
 export const AppRouter = () => {
 
     const dispatch = useDispatch();
+    const { checking, uid } = useSelector( state => state.auth );
 
+    //cada vez que el usuario viaje en alguna direccion de la pagina verifico el token
     useEffect(() => {
         dispatch( startChecking());
-    }, [dispatch])
+    }, [dispatch]);
+
+    if( checking ){
+        return (<h5>Espere...</h5>);
+    }
+
+
 
     return (
         <Router>
         <div>
             <Switch>
-                <Route exact path="/login" component = {LoginScreen}/>
+                <PublicRoute
+                     exact path="/login" 
+                     component = {LoginScreen}
+                     isAuthenticated = { !!uid }/>
                 
-                <Route exact path="/" component = {CalendarScreen}/>
+                <PrivateRoute 
+                    exact 
+                    path="/" 
+                    component = {CalendarScreen}
+                    isAuthenticated = { !!uid }/>
 
                 <Redirect to = "/"/>
                   

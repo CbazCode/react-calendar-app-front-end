@@ -6,8 +6,7 @@ export const startLogin = (email, password) => {
     return async( dispatch ) => {
         const resp = await fectchSinToken( 'auth', {email, password}, 'POST');
         const body = await resp.json();
-        console.log(body);
-
+    
         if(body.ok){
             localStorage.setItem( 'token' , body.token);
             localStorage.setItem( 'token-init-date' , new Date().getTime());
@@ -44,7 +43,6 @@ export const startChecking = () => {
     return async( dispatch )=> {
         const resp = await fectchConToken('auth/renew');
         const body = await resp.json();
-        console.log(body);
         if(body.ok){
             localStorage.setItem( 'token' , body.token);
             localStorage.setItem( 'token-init-date' , new Date().getTime());
@@ -68,5 +66,18 @@ const login = ( user ) => {
     return {
         type: types.authLogin,
         payload: user
+    }
+}
+
+export const startLogout = () => {
+    return (dispatch) => {
+        localStorage.clear();
+        dispatch(logout());
+    }
+}
+
+const logout = () => {
+    return {
+        type: types.authLogout
     }
 }
